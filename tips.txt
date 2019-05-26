@@ -1,0 +1,3 @@
+# get game and ID
+ curl "https://www.giantbomb.com/api/games/?api_key=${APIKEY}&format=json&field_list=name,id" | jq
+

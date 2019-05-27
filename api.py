@@ -17,7 +17,7 @@ def search(name):
 def inspect(guid, dlc=False):
     url = base_url + "game/" + guid + "/?api_key=" + api_key + "&format=json&field_list=name,description,genres,deck"
     if(dlc):
-        url = url + ',dlcs'
+        url = url + ',dlcs&sort=releases:desc'
     game_info = requests.get(url, headers=headers)
     results = json.loads(game_info.content)
     return results['results']
@@ -28,25 +28,25 @@ api_key = os.environ['APIKEY']
 headers = {'User-Agent': 'tmoody technical test'}  # api requested useragent to identify who is using it
 base_url = "https://www.giantbomb.com/api/"
 
-
-parser = argparse.ArgumentParser(description='search games')
-parser.add_argument('function', type=str, choices=['search', 'inspect'],
-                    help='type of request (search or inspect)')
-parser.add_argument('filter', type=str,
-                    help='search criteria')
-parser.add_argument('--dlc', action='store_true',
-                    help='Used with inspect to return DLC')
-args = parser.parse_args()
-
 ######################## main
-if(args.function == 'search'):
-    results = search(args.filter)
-#   for game in results:
-#        inspect(game['guid'])
-else:
-    if(args.dlc):
-        results = inspect(args.filter, True)
-    else:
-        results = inspect(args.filter)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='search games')
+    parser.add_argument('function', type=str, choices=['search', 'inspect'],
+                        help='type of request (search or inspect)')
+    parser.add_argument('filter', type=str,
+                        help='search criteria')
+    parser.add_argument('--dlc', action='store_true',
+                        help='Used with inspect to return DLC')
+    args = parser.parse_args()
 
-print(json.dumps(results, indent=2, sort_keys=True))
+    if(args.function == 'search'):
+        results = search(args.filter)
+    #   for game in results:
+    #        inspect(game['guid'])
+    else:
+        if(args.dlc):
+            results = inspect(args.filter, True)
+        else:
+            results = inspect(args.filter)
+
+    print(json.dumps(results, indent=2, sort_keys=True))
